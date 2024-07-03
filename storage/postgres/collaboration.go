@@ -4,6 +4,7 @@ import (
 	pb "collaboration_service/genproto"
 	strorage "collaboration_service/help"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -19,15 +20,16 @@ func NewCollaborationRepositoryRepository(db *sql.DB) *CollaborationRepository {
 //		return repo.Db.Exec("insert into collaborations(composition_id,user_id,role,created_at)", compositionId, collaboration.User_Id, collaboration.Role, time.Now())
 //	}
 func (repo CollaborationRepository) UpdateCollaboration(collaboration *pb.UpdateCollaborationRequest) (*pb.Void, error) {
-	_, err := repo.Db.Exec("update collaborations set composition_id=$1,user_id=$2,role=$3,updated_at=$4 where user_id=$5 and deleted_at=0 and composition_id)", collaboration.CompositionId, collaboration.Userid, collaboration.Role, time.Now(), collaboration.Userid)
+	_, err := repo.Db.Exec("update collaborations set composition_id=$1,user_id=$2,role=$3,updated_at=$4 where user_id=$5 and deleted_at is null and composition_id=$6", collaboration.CompositionId, collaboration.Userid, collaboration.Role, time.Now(), collaboration.Userid, collaboration.CompositionId)
 	if err != nil {
+		fmt.Println("+++++++++++++", err)
 		return nil, err
 	}
 	return &pb.Void{}, nil
 }
 
 func (repo CollaborationRepository) DeleteCollaboration(collaboration *pb.DeleteCollaborationRequest) (*pb.Void, error) {
-	_, err := repo.Db.Exec("update collaborations set deleted_at=$1 where user_id=$2 and deleted_at is null and collobartion_id=$3)", time.Now(), collaboration.Userid, collaboration.CompositionId)
+	_, err := repo.Db.Exec("update collaborations set deleted_at=$1 where user_id=$2 and deleted_at is null and collobartion_id=$3", time.Now(), collaboration.Userid, collaboration.CompositionId)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +51,7 @@ func (repo CollaborationRepository) DeleteCollaboration(collaboration *pb.Delete
 //		}
 //		return nil, err
 //	}
-func (repo CollaborationRepository) GetCollaboration(collaboration *pb.GetCollaboratorsRequest) (*pb.CollaborationsResponse, error) {
+func (repo CollaborationRepository) GetCollaborators(collaboration *pb.GetCollaboratorsRequest) (*pb.CollaborationsResponse, error) {
 	var (
 		params = make(map[string]interface{})
 		arr    []interface{}

@@ -14,15 +14,15 @@ func NewInvasionRepository(db *sql.DB) *InvasionRepository {
 	return &InvasionRepository{Db: db}
 }
 
-func (repo InvasionRepository) CreateInvasion(invasion *pb.CreateInviteRequest) (*pb.Void, error) {
-	_, err := repo.Db.Exec("insert into invasions(composition_id,invert_id,invitee_id,status,created_at)", invasion.CompositionId, invasion.InvertId, invasion.InviteeId, invasion.Status, time.Now())
+func (repo InvasionRepository) CreateInvite(invasion *pb.CreateInviteRequest) (*pb.Void, error) {
+	_, err := repo.Db.Exec("insert into invitations(composition_id,inviter_id,invitee_id,status,created_at)values ($1,$2,$3,$4,$5)", invasion.CompositionId, invasion.InvertId, invasion.InviteeId, invasion.Status, time.Now())
 	if err != nil {
 		return nil, err
 	}
 	return &pb.Void{}, nil
 }
-func (repo InvasionRepository) UpdateInvasion(invasion *pb.UpdateInviteRequest) (*pb.Void, error) {
-	_, err := repo.Db.Exec("update invasions set composition_id=$1,user_id=$2,title=$3,file_url=$4,updated_at=$5 where id=$6 and deleted_at=0)", invasion.CompositionId, invasion.InvertId, invasion.InviteeId, invasion.Status, time.Now(), invasion.Id)
+func (repo InvasionRepository) UpdateInvite(invasion *pb.UpdateInviteRequest) (*pb.Void, error) {
+	_, err := repo.Db.Exec("update invitations set composition_id=$1,inviter_id=$2,invitee_id=$3,status=$4,updated_at=$5 where id=$6 and deleted_at is null ", invasion.CompositionId, invasion.InvertId, invasion.InviteeId, invasion.Status, time.Now(), invasion.Id)
 	if err != nil {
 		return nil, err
 	}

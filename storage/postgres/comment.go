@@ -16,7 +16,7 @@ func NewCommentRepositoryRepository(db *sql.DB) *CommentRepository {
 }
 
 func (repo CommentRepository) CreateComment(comment *pb.CreateCommitRequest) (*pb.Void, error) {
-	_, err := repo.Db.Exec("insert into comments(composition_id,user_id,content,created_at)", comment.CompositionId, comment.UserId, comment.Content, time.Now())
+	_, err := repo.Db.Exec("insert into comments(composition_id,user_id,content,created_at) values ($1,$2,$3,$4)", comment.CompositionId, comment.UserId, comment.Content, time.Now())
 	if err != nil {
 		return nil, err
 	}

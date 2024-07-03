@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	HTTPPort string
+	CollaborationServicePort string
 
 	PostgresHost     string
 	PostgresPort     int
@@ -26,7 +26,7 @@ func Load() Config {
 
 	config := Config{}
 
-	config.HTTPPort = cast.ToString(coalesce("HTTP_PORT", ":8088"))
+	config.CollaborationServicePort = cast.ToString(coalesce("COLLABORATION_SERVICE_PORT", ":8083"))
 
 	config.PostgresHost = cast.ToString(coalesce("DB_HOST", "localhost"))
 	config.PostgresPort = cast.ToInt(coalesce("DB_PORT", 5433))
