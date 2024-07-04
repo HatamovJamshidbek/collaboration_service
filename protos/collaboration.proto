@@ -64,9 +64,16 @@ message  GetCollaboratorsRequest{
    string Role=3;
    Filter limitOffset=4;
 }
-service  CollaborationService{
+message CreateCollaborationRequest {
+  string compositionId = 1;
+  string userId = 2;
+  string role = 3;
+
+}
+  service  CollaborationService{
   rpc CreateInvite(CreateInviteRequest)returns(Void);
   rpc UpdateInvite(UpdateInviteRequest)returns(Void);
+  rpc CreateCollaborators(CreateCollaborationRequest) returns(Void);
   rpc GetCollaborators(GetCollaboratorsRequest)returns(CollaborationsResponse);
   rpc UpdateCollaborators(UpdateCollaborationRequest)returns(Void);
   rpc DeleteCollaborators(DeleteCollaborationRequest)returns(Void);

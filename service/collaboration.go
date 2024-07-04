@@ -59,8 +59,16 @@ func (service *CollaborationService) CreateComment(ctx context.Context, in *pb.C
 	}
 	return response, err
 }
+
 func (service *CollaborationService) GetComment(ctx context.Context, in *pb.GetCommitRequest) (*pb.CommitsResponse, error) {
 	response, err := service.Com.GetComment(in)
+	if err != nil {
+		return nil, err
+	}
+	return response, err
+}
+func (service *CollaborationService) CreateCollaborators(ctx context.Context, in *pb.CreateCollaborationRequest) (*pb.Void, error) {
+	response, err := service.Col.CreateCollaboration(in)
 	if err != nil {
 		return nil, err
 	}

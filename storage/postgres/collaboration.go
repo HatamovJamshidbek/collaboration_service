@@ -16,9 +16,13 @@ func NewCollaborationRepositoryRepository(db *sql.DB) *CollaborationRepository {
 	return &CollaborationRepository{Db: db}
 }
 
-//	func (repo CollaborationRepository) CreateCollaboration(compositionId string, collaboration *models.Collaboration) (interface{}, error) {
-//		return repo.Db.Exec("insert into collaborations(composition_id,user_id,role,created_at)", compositionId, collaboration.User_Id, collaboration.Role, time.Now())
-//	}
+func (repo CollaborationRepository) CreateCollaboration(collaboration *pb.CreateCollaborationRequest) (*pb.Void, error) {
+	_, err := repo.Db.Exec("insert into collaborations(composition_id,user_id,role,created_at) values ($1,$2,$3,$4)", collaboration.CompositionId, collaboration.UserId, collaboration.Role, time.Now())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.Void{}, nil
+}
 func (repo CollaborationRepository) UpdateCollaboration(collaboration *pb.UpdateCollaborationRequest) (*pb.Void, error) {
 	_, err := repo.Db.Exec("update collaborations set composition_id=$1,user_id=$2,role=$3,updated_at=$4 where user_id=$5 and deleted_at is null and composition_id=$6", collaboration.CompositionId, collaboration.Userid, collaboration.Role, time.Now(), collaboration.Userid, collaboration.CompositionId)
 	if err != nil {
@@ -29,7 +33,7 @@ func (repo CollaborationRepository) UpdateCollaboration(collaboration *pb.Update
 }
 
 func (repo CollaborationRepository) DeleteCollaboration(collaboration *pb.DeleteCollaborationRequest) (*pb.Void, error) {
-	_, err := repo.Db.Exec("update collaborations set deleted_at=$1 where user_id=$2 and deleted_at is null and collobartion_id=$3", time.Now(), collaboration.Userid, collaboration.CompositionId)
+	_, err := repo.Db.Exec("update collaborations set deleted_at=$1 where user_id=$2 and deleted_at is null and composition_id=$3", time.Now(), collaboration.Userid, collaboration.CompositionId)
 	if err != nil {
 		return nil, err
 	}

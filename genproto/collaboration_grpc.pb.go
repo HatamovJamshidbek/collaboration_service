@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type CollaborationServiceClient interface {
 	CreateInvite(ctx context.Context, in *CreateInviteRequest, opts ...grpc.CallOption) (*Void, error)
 	UpdateInvite(ctx context.Context, in *UpdateInviteRequest, opts ...grpc.CallOption) (*Void, error)
+	CreateCollaborators(ctx context.Context, in *CreateCollaborationRequest, opts ...grpc.CallOption) (*Void, error)
 	GetCollaborators(ctx context.Context, in *GetCollaboratorsRequest, opts ...grpc.CallOption) (*CollaborationsResponse, error)
 	UpdateCollaborators(ctx context.Context, in *UpdateCollaborationRequest, opts ...grpc.CallOption) (*Void, error)
 	DeleteCollaborators(ctx context.Context, in *DeleteCollaborationRequest, opts ...grpc.CallOption) (*Void, error)
@@ -51,6 +52,15 @@ func (c *collaborationServiceClient) CreateInvite(ctx context.Context, in *Creat
 func (c *collaborationServiceClient) UpdateInvite(ctx context.Context, in *UpdateInviteRequest, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, "/protos.CollaborationService/UpdateInvite", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *collaborationServiceClient) CreateCollaborators(ctx context.Context, in *CreateCollaborationRequest, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/protos.CollaborationService/CreateCollaborators", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +118,7 @@ func (c *collaborationServiceClient) GetComment(ctx context.Context, in *GetComm
 type CollaborationServiceServer interface {
 	CreateInvite(context.Context, *CreateInviteRequest) (*Void, error)
 	UpdateInvite(context.Context, *UpdateInviteRequest) (*Void, error)
+	CreateCollaborators(context.Context, *CreateCollaborationRequest) (*Void, error)
 	GetCollaborators(context.Context, *GetCollaboratorsRequest) (*CollaborationsResponse, error)
 	UpdateCollaborators(context.Context, *UpdateCollaborationRequest) (*Void, error)
 	DeleteCollaborators(context.Context, *DeleteCollaborationRequest) (*Void, error)
@@ -125,6 +136,9 @@ func (UnimplementedCollaborationServiceServer) CreateInvite(context.Context, *Cr
 }
 func (UnimplementedCollaborationServiceServer) UpdateInvite(context.Context, *UpdateInviteRequest) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateInvite not implemented")
+}
+func (UnimplementedCollaborationServiceServer) CreateCollaborators(context.Context, *CreateCollaborationRequest) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCollaborators not implemented")
 }
 func (UnimplementedCollaborationServiceServer) GetCollaborators(context.Context, *GetCollaboratorsRequest) (*CollaborationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCollaborators not implemented")
@@ -186,6 +200,24 @@ func _CollaborationService_UpdateInvite_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(CollaborationServiceServer).UpdateInvite(ctx, req.(*UpdateInviteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CollaborationService_CreateCollaborators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCollaborationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CollaborationServiceServer).CreateCollaborators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.CollaborationService/CreateCollaborators",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CollaborationServiceServer).CreateCollaborators(ctx, req.(*CreateCollaborationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -294,6 +326,10 @@ var CollaborationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateInvite",
 			Handler:    _CollaborationService_UpdateInvite_Handler,
+		},
+		{
+			MethodName: "CreateCollaborators",
+			Handler:    _CollaborationService_CreateCollaborators_Handler,
 		},
 		{
 			MethodName: "GetCollaborators",
